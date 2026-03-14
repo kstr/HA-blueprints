@@ -18,6 +18,7 @@ If the button above doesn't work, you can copy the URL below and paste it into t
 *   **Stabilization Time**: Prevent notification "flapping" by requiring states to remain active for a configurable duration (e.g., 30 seconds).
 *   **Parallel Execution**: Handles multiple environmental shifts concurrently (e.g., boosting the air purifier while notifying about high CO2).
 *   **Time Window Control**: Optional toggle to restrict the automation to specific hours (e.g., 8:00 AM - 10:00 PM), perfect for sleeping hours.
+*   **Keep Display Off**: Automatically forces the device's screen to turn off if it ever turns on (e.g., manually or after a power cycle) to prevent distractions in bedrooms.
 
 ## 💡 Example Use Cases
 

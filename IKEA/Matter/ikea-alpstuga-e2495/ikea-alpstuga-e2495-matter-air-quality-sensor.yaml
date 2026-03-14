@@ -1,5 +1,5 @@
 blueprint:
-  name: IKEA ALPSTUGA E2495 Air Quality Sensor (Matter) v2.0
+  name: IKEA ALPSTUGA E2495 Air Quality Sensor (Matter) v2.1
   description: 'Pro-grade automation for the IKEA ALPSTUGA E2495 Matter Air Quality sensor. 
     Allows triggering actions (Air Purifiers, Ventilation, HVAC) based on thresholds for 
     CO2, PM2.5, Air Quality Index (summary state), Temperature, and Humidity.
@@ -40,6 +40,22 @@ blueprint:
       default: "22:00:00"
       selector:
         time: {}
+
+    # Display Settings
+    display_switch:
+      name: (Optional) Display Switch
+      description: Select the switch entity that controls the device's screen.
+      default: []
+      selector:
+        entity:
+          filter:
+            - domain: switch
+    keep_display_off:
+      name: Keep Display Off
+      description: Automatically turn the screen back off if it turns on (e.g., after a power cycle). Requires the Display Switch entity to be selected.
+      default: false
+      selector:
+        boolean: {}
 
     # CO2 Settings
     co2_sensor:
@@ -324,6 +340,8 @@ trigger_variables:
   aqi_helper_proxy_entity: !input aqi_helper_proxy
   temp_helper_proxy_entity: !input temp_helper_proxy
   humidity_helper_proxy_entity: !input humidity_helper_proxy
+  display_switch_entity: !input display_switch
+  keep_display_off_input: !input keep_display_off
 
 triggers:
   - trigger: numeric_state
@@ -386,7 +404,11 @@ triggers:
     for:
       seconds: !input stabilization_time
     id: humidity_low
-
+  - trigger: state
+    entity_id: !input display_switch
+    from: "off"
+    to: "on"
+    id: display_turned_on
 
 condition:
   - condition: or
@@ -399,6 +421,28 @@ condition:
 
 actions:
   - choose:
+      # DISPLAY CONTROL
+      - conditions:
+          - condition: or
+            conditions:
+              - condition: trigger
+                id: display_turned_on
+              # Support for manual execution / scenes
+              - condition: template
+                value_template: >-
+                  {{ trigger is not defined or trigger.id is not defined or trigger.id == none }}
+          - condition: template
+            value_template: "{{ is_state(display_switch_entity, 'on') }}"
+          - condition: template
+            value_template: "{{ keep_display_off_input | bool(false) }}"
+        sequence:
+          # Matter Hardware Buffer: Give the device a moment to finish its "on" transition 
+          # before blasting an "off" command back to it.
+          - delay: 2.0
+          - service: switch.turn_off
+            target:
+              entity_id: !input display_switch
+
       - conditions:
           - condition: trigger
             id: co2_high
