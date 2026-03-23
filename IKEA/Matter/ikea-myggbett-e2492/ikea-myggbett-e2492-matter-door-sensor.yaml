@@ -149,7 +149,7 @@ triggers:
     id: door_closed_long
   - trigger: template
     value_template: >
-      {{ battery_entity_input != none and 
+      {{ battery_entity_input != none and battery_entity_input != [] and battery_entity_input != '' and 
          states(battery_entity_input) | is_number and 
          states(battery_entity_input) | float(100) < battery_threshold_input | float(-1) }}
     id: battery_low

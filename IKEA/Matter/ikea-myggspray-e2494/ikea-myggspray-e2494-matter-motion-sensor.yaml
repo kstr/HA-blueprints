@@ -165,19 +165,19 @@ triggers:
   # Template triggers for optional entities
   - trigger: template
     value_template: >
-      {{ illuminance_entity_input != none and 
+      {{ illuminance_entity_input != none and illuminance_entity_input != [] and illuminance_entity_input != '' and 
          states(illuminance_entity_input) | is_number and 
          states(illuminance_entity_input) | float(0) > high_threshold_input | float(100000) }}
     id: light_high
   - trigger: template
     value_template: >
-      {{ illuminance_entity_input != none and 
+      {{ illuminance_entity_input != none and illuminance_entity_input != [] and illuminance_entity_input != '' and 
          states(illuminance_entity_input) | is_number and 
          states(illuminance_entity_input) | float(100000) < low_threshold_input | float(-1) }}
     id: light_low
   - trigger: template
     value_template: >
-      {{ battery_entity_input != none and 
+      {{ battery_entity_input != none and battery_entity_input != [] and battery_entity_input != '' and 
          states(battery_entity_input) | is_number and 
          states(battery_entity_input) | float(100) < battery_threshold_input | float(-1) }}
     id: battery_low
