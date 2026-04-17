@@ -57,7 +57,7 @@ blueprint:
       selector:
         number:
           min: -20
-          max: 50
+          max: 132
           unit_of_measurement: "°C"
           mode: box
     action_temp_high:
@@ -73,7 +73,7 @@ blueprint:
       selector:
         number:
           min: -20
-          max: 50
+          max: 132
           unit_of_measurement: "°C"
           mode: box
     action_temp_low:
